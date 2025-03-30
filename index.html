@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Player </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        #video-container {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 800px;
+            height: 450px;
+        }
+
+        #link-box {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        #play-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        #play-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Video Link Player</h1>
+    
+    <input type="text" id="link-box" placeholder="Paste YouTube link here" />
+    <button id="play-button">Play</button>
+    
+    <div id="video-container">
+        <!-- YouTube video will be embedded here -->
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+
+    <script>
+        // Play button event listener
+        document.getElementById('play-button').addEventListener('click', function() {
+            const videoUrl = document.getElementById('link-box').value;
+            const videoId = getYouTubeVideoId(videoUrl);
+            if (videoId) {
+                loadYouTubeVideo(videoId);
+            } else {
+                alert("Please enter a valid YouTube video URL.");
+            }
+        });
+
+        // Extract YouTube video ID from URL
+        function getYouTubeVideoId(url) {
+            const regex = /(?:https?:\/\/(?:www\.)?youtube\.com\/(?:[^\/]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        let player;
+
+        // Create YouTube player and embed video
+        function loadYouTubeVideo(videoId) {
+            if (player) {
+                player.loadVideoById(videoId);
+            } else {
+                player = new YT.Player('video-container', {
+                    height: '450',
+                    width: '800',
+                    videoId: videoId,
+                    events: {
+                        onReady: onPlayerReady
+                    }
+                });
+            }
+        }
+
+        // This function is called when the YouTube player is ready
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+    </script>
+</body>
+</html>
